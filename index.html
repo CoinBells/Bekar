@@ -15,22 +15,22 @@
 
     body {
       background: #000;
+      margin: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      overflow: hidden;
-      color: #222;
     }
 
     #game-wrapper {
       position: relative;
-      width: 100%;
-      max-width: 420px;
-      aspect-ratio: 9 / 16;
+      width: 100vw;
+      height: 100vh;
+      max-width: 100vw;
+      max-height: 100vh;
       background: #000;
-      border-radius: 24px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
       overflow: hidden;
     }
 
@@ -128,10 +128,10 @@
       z-index: 2;
     }
 
-    /* رابط الانستقرام داخل الكرت */
+    /* رابط الانستقرام داخل الشاشة */
     #igFooter {
       position: absolute;
-      bottom: 10px;
+      bottom: 12px;
       left: 50%;
       transform: translateX(-50%);
       font-size: 12px;
@@ -191,7 +191,7 @@
       <img id="bakerThumb" src="BAKER.PNG" alt="Baker" />
     </div>
 
-    <!-- رابط الانستقرام داخل الكرت -->
+    <!-- رابط الانستقرام -->
     <div id="igFooter">Talgema</div>
   </div>
 
@@ -201,14 +201,16 @@
     // إعداد الكانفس
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
+
+    // منطقياً نخلي اللعبة 360x640 ونكبرها فل سكرين
     const GAME_WIDTH = 360;
     const GAME_HEIGHT = 640;
 
     const dpr = window.devicePixelRatio || 1;
     canvas.width = GAME_WIDTH * dpr;
     canvas.height = GAME_HEIGHT * dpr;
-    canvas.style.width = GAME_WIDTH + "px";
-    canvas.style.height = GAME_HEIGHT + "px";
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
     ctx.scale(dpr, dpr);
 
     // تحميل الصور
@@ -258,7 +260,7 @@
     let bestScore = parseInt(localStorage.getItem(BEST_KEY) || "0", 10);
 
     // اللاعب والعالم
-    const groundY = GAME_HEIGHT - 130; // رفع الأرض شوي
+    const groundY = GAME_HEIGHT - 130; // ارتفاع الأرض
 
     const player = {
       x: 90,
@@ -367,7 +369,7 @@
       }
     }
 
-    // رسم مستطيل بحواف مستديرة
+    // مستطيل بحواف مستديرة
     function roundRect(ctx, x, y, w, h, r) {
       if (w < 2 * r) r = w / 2;
       if (h < 2 * r) r = h / 2;
@@ -380,14 +382,15 @@
       ctx.closePath();
     }
 
-    // الحواجز (أصغر ومتناسقة)
+    // الحواجز (مقاس جديد أصغر ومتناسق)
     function drawObstacle(ob) {
       ctx.fillStyle = ob.color;
       roundRect(ctx, ob.x, ob.y, ob.width, ob.height, 8);
       ctx.fill();
+
       ctx.fillStyle = "rgba(0,0,0,0.15)";
       if (ob.type === "tray") {
-        ctx.fillRect(ob.x + 6, ob.y + 6, ob.width - 12, 6);
+        ctx.fillRect(ob.x + 5, ob.y + 5, ob.width - 10, 6);
       } else if (ob.type === "olive") {
         ctx.beginPath();
         ctx.arc(
@@ -450,19 +453,19 @@
     function spawnObstacle(now) {
       const typeRoll = Math.random();
       let type = "tray";
-      let width = 55;
-      let height = 32;
+      let width = 45;   // كان 55
+      let height = 26;  // كان 32
       let color = "#b27d51";
 
       if (typeRoll < 0.33) {
         type = "olive";
-        width = 36;
-        height = 36;
+        width = 32;
+        height = 32;
         color = "#8a9c4a";
       } else if (typeRoll < 0.66) {
         type = "flour";
-        width = 48;
-        height = 38;
+        width = 36;    // كان 48
+        height = 28;   // كان 38
         color = "#d2c6b3";
       }
 
