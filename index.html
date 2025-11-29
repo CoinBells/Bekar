@@ -14,7 +14,7 @@
     }
 
     body {
-      background: radial-gradient(circle at top, #222 0, #000 55%, #000 100%);
+      background: #000;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -39,7 +39,7 @@
       height: 100%;
       display: block;
       background: transparent;
-      touch-action: none; /* يمنع سكرول/زوم مع اللمس داخل اللعبة */
+      touch-action: none;
     }
 
     .screen {
@@ -51,7 +51,7 @@
       align-items: center;
       padding: 20px;
       text-align: center;
-      background: radial-gradient(circle at top, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.75));
+      background: radial-gradient(circle at top, rgba(0,0,0,0.25), rgba(0,0,0,0.75));
       color: #f7f0e3;
       z-index: 3;
     }
@@ -88,19 +88,19 @@
       cursor: pointer;
       font-weight: 600;
       letter-spacing: 1px;
-      box-shadow: 0 8px 14px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 8px 14px rgba(0,0,0,0.35);
       transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s;
     }
     .btn:active {
       transform: translateY(1px) scale(0.98);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
       background: #f1ddc0;
     }
 
     .btn-secondary {
       background: #2b2623;
       color: #f5e4c8;
-      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.4);
     }
     .btn-secondary:active {
       background: #211d1a;
@@ -128,7 +128,7 @@
       z-index: 2;
     }
 
-    /* رابط الانستقرام في أسفل الكرت */
+    /* رابط الانستقرام داخل الكرت */
     #igFooter {
       position: absolute;
       bottom: 10px;
@@ -136,17 +136,16 @@
       transform: translateX(-50%);
       font-size: 12px;
       color: #f5e4c8;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.8);
       padding: 4px 14px;
       border-radius: 999px;
       cursor: pointer;
       z-index: 4;
       letter-spacing: 1px;
     }
-
     #igFooter:active {
       transform: translateX(-50%) scale(0.97);
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0,0,0,0.95);
     }
 
     /* صورة اللاعب في شاشة النتيجة */
@@ -164,7 +163,7 @@
   <div id="game-wrapper">
     <canvas id="gameCanvas"></canvas>
 
-    <!-- HUD أثناء اللعب -->
+    <!-- HUD -->
     <div id="hud" style="display:none;">
       <div id="scoreLabel">Score: 0</div>
       <div id="bestLabel">Best: 0</div>
@@ -192,15 +191,14 @@
       <img id="bakerThumb" src="BAKER.PNG" alt="Baker" />
     </div>
 
-    <!-- رابط الانستقرام -->
+    <!-- رابط الانستقرام داخل الكرت -->
     <div id="igFooter">Talgema</div>
   </div>
 
   <script>
     "use strict";
 
-    // ============ إعداد الكانفس ============
-
+    // إعداد الكانفس
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     const GAME_WIDTH = 360;
@@ -213,8 +211,7 @@
     canvas.style.height = GAME_HEIGHT + "px";
     ctx.scale(dpr, dpr);
 
-    // ============ تحميل الصور ============
-
+    // تحميل الصور
     const bakerImg = new Image();
     bakerImg.src = "BAKER.PNG";
     let bakerLoaded = false;
@@ -228,9 +225,7 @@
     const fatayerImg = new Image();
     fatayerImg.src = "fatayer.jpg";
 
-    // ============ عناصر الواجهة ============
-
-    const wrapper = document.getElementById("game-wrapper");
+    // عناصر الواجهة
     const startScreen = document.getElementById("startScreen");
     const gameOverScreen = document.getElementById("gameOverScreen");
     const startBtn = document.getElementById("startBtn");
@@ -251,22 +246,19 @@
       );
     });
 
-    // ============ حالة اللعبة ============
-
+    // حالة اللعبة
     const STATE_MENU = "menu";
     const STATE_PLAYING = "playing";
     const STATE_GAMEOVER = "gameover";
     let gameState = STATE_MENU;
 
-    // ============ السكور ============
-
+    // السكور
     let score = 0;
     const BEST_KEY = "talgema_run_best_score";
     let bestScore = parseInt(localStorage.getItem(BEST_KEY) || "0", 10);
 
-    // ============ اللاعب والعالم ============
-
-    const groundY = GAME_HEIGHT - 120;
+    // اللاعب والعالم
+    const groundY = GAME_HEIGHT - 130; // رفع الأرض شوي
 
     const player = {
       x: 90,
@@ -290,8 +282,7 @@
 
     let lastFrameTime = performance.now();
 
-    // ============ إدخال (قفز ضغطة واحدة) ============
-
+    // قفزة واحدة
     function jump() {
       if (gameState !== STATE_PLAYING) return;
       if (player.onGround) {
@@ -308,9 +299,7 @@
     }
 
     canvas.addEventListener("touchstart", handlePointerDown, { passive: false });
-    canvas.addEventListener("mousedown", handlePointerDown);
-    wrapper.addEventListener("touchstart", handlePointerDown, { passive: false });
-
+    canvas.addEventListener("mousedown", handlePointerDown, { passive: false });
     window.addEventListener("keydown", (e) => {
       if (e.code === "Space") {
         e.preventDefault();
@@ -318,10 +307,9 @@
       }
     });
 
-    // ============ رسم الخلفية ============
-
+    // الخلفية
     function drawBackground() {
-      // صورة الفطائر تغطي كامل الشاشة (cover)
+      // fatayer cover
       if (fatayerImg.complete && fatayerImg.naturalWidth > 0) {
         const iw = fatayerImg.width;
         const ih = fatayerImg.height;
@@ -330,14 +318,12 @@
         const h = ih * scale;
         const x = (GAME_WIDTH - w) / 2;
         const y = (GAME_HEIGHT - h) / 2;
-
         ctx.drawImage(fatayerImg, x, y, w, h);
       } else {
         ctx.fillStyle = "#f3e0c3";
         ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
       }
 
-      // طبقة تدرّج خفيفة لتوضيح النصوص واللاعب
       const grad = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT);
       grad.addColorStop(0, "rgba(243, 224, 195, 0.65)");
       grad.addColorStop(0.6, "rgba(243, 224, 195, 0.4)");
@@ -345,7 +331,7 @@
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-      // أرضية شبه شفافة فوق الخلفية
+      // أرضية
       ctx.save();
       ctx.globalAlpha = 0.9;
       ctx.fillStyle = "#e1c296";
@@ -353,10 +339,8 @@
       ctx.restore();
     }
 
-    // ============ رسم اللاعب ============
-
+    // اللاعب
     function drawPlayer() {
-      // ظل ثابت على الأرض
       ctx.fillStyle = "rgba(0,0,0,0.22)";
       ctx.beginPath();
       ctx.ellipse(
@@ -371,7 +355,6 @@
       ctx.fill();
 
       const feetY = player.y + player.height;
-
       if (bakerLoaded) {
         const spriteHeight = 190;
         const spriteWidth = spriteHeight * (bakerImg.width / bakerImg.height);
@@ -384,8 +367,7 @@
       }
     }
 
-    // ============ العوائق و الكرك / الفطائر ============
-
+    // رسم مستطيل بحواف مستديرة
     function roundRect(ctx, x, y, w, h, r) {
       if (w < 2 * r) r = w / 2;
       if (h < 2 * r) r = h / 2;
@@ -398,36 +380,36 @@
       ctx.closePath();
     }
 
+    // الحواجز (أصغر ومتناسقة)
     function drawObstacle(ob) {
       ctx.fillStyle = ob.color;
-      roundRect(ctx, ob.x, ob.y, ob.width, ob.height, 10);
+      roundRect(ctx, ob.x, ob.y, ob.width, ob.height, 8);
       ctx.fill();
-
       ctx.fillStyle = "rgba(0,0,0,0.15)";
       if (ob.type === "tray") {
-        ctx.fillRect(ob.x + 8, ob.y + 8, ob.width - 16, 7);
+        ctx.fillRect(ob.x + 6, ob.y + 6, ob.width - 12, 6);
       } else if (ob.type === "olive") {
         ctx.beginPath();
         ctx.arc(
           ob.x + ob.width / 2,
           ob.y + ob.height / 2,
-          ob.width / 2.3,
+          ob.width / 2.4,
           0,
           Math.PI * 2
         );
         ctx.fill();
       } else if (ob.type === "flour") {
-        ctx.fillRect(ob.x + 6, ob.y + 6, ob.width - 12, ob.height - 14);
+        ctx.fillRect(ob.x + 4, ob.y + 4, ob.width - 8, ob.height - 10);
       }
     }
 
+    // الكرك / الفطائر
     function drawPickup(pk) {
       const size = pk.size;
       const centerX = pk.x + size / 2;
       const centerY = pk.y + size / 2;
 
       if (pk.kind === "karak" && karakLoaded) {
-        // كوب الكرك بشعار تلقيمة
         const aspect = karakImg.height / karakImg.width;
         const w = size;
         const h = size * aspect;
@@ -435,36 +417,31 @@
         const drawY = centerY - h / 2;
         ctx.drawImage(karakImg, drawX, drawY, w, h);
       } else {
-        // فطيرة صغيرة
         ctx.fillStyle = "#f1d2a4";
         ctx.beginPath();
-        ctx.ellipse(centerX, centerY, 16, 11, 0, 0, Math.PI * 2);
+        ctx.ellipse(centerX, centerY, 14, 9, 0, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.fillStyle = "#d08b3f";
         ctx.beginPath();
-        ctx.ellipse(centerX, centerY, 10, 6, 0, 0, Math.PI * 2);
+        ctx.ellipse(centerX, centerY, 9, 5, 0, 0, Math.PI * 2);
         ctx.fill();
       }
     }
 
-    // ============ لوجيك اللعبة ============
-
+    // لوجيك اللعبة
     function resetGame() {
       score = 0;
       player.x = 90;
       player.y = groundY - player.height;
       player.vy = 0;
       player.onGround = true;
-
       obstacles.length = 0;
       pickups.length = 0;
-
       lastSpawnObstacle = 0;
       lastSpawnPickup = 0;
       obstacleInterval = 1400;
       pickupInterval = 1100;
-
       lastFrameTime = performance.now();
       scoreLabel.textContent = "Score: 0";
       bestLabel.textContent = "Best: " + bestScore;
@@ -473,19 +450,19 @@
     function spawnObstacle(now) {
       const typeRoll = Math.random();
       let type = "tray";
-      let width = 72;
-      let height = 44;
+      let width = 55;
+      let height = 32;
       let color = "#b27d51";
 
       if (typeRoll < 0.33) {
         type = "olive";
-        width = 42;
-        height = 42;
+        width = 36;
+        height = 36;
         color = "#8a9c4a";
       } else if (typeRoll < 0.66) {
         type = "flour";
-        width = 60;
-        height = 50;
+        width = 48;
+        height = 38;
         color = "#d2c6b3";
       }
 
@@ -503,10 +480,9 @@
     }
 
     function spawnPickup(now) {
-      const kind = Math.random() < 0.8 ? "karak" : "fatayer"; // أغلب الوقت كرك
-      const size = 50;
+      const kind = Math.random() < 0.8 ? "karak" : "fatayer";
+      const size = 44;
       const y = groundY - 110 - Math.random() * 60;
-
       const pk = {
         x: GAME_WIDTH + 20,
         y,
@@ -531,27 +507,23 @@
       // فيزياء اللاعب
       player.vy += gravity;
       player.y += player.vy;
-
       if (player.y + player.height >= groundY) {
         player.y = groundY - player.height;
         player.vy = 0;
-        if (!player.onGround) {
-          player.onGround = true;
-        }
+        if (!player.onGround) player.onGround = true;
       }
 
-      // توليد العوائق والـ pickups
+      // توليد حواجز و كرك
       if (now - lastSpawnObstacle > obstacleInterval) {
         spawnObstacle(now);
         if (obstacleInterval > 950) obstacleInterval -= 20;
       }
-
       if (now - lastSpawnPickup > pickupInterval) {
         spawnPickup(now);
         if (pickupInterval > 800) pickupInterval -= 15;
       }
 
-      // تحريك العوائق
+      // تحريك الحواجز
       for (let i = obstacles.length - 1; i >= 0; i--) {
         const ob = obstacles[i];
         ob.x -= ob.speed;
@@ -574,7 +546,7 @@
         }
       }
 
-      // تحريك الكرك / الفطاير
+      // تحريك الكرك / الفطائر
       for (let i = pickups.length - 1; i >= 0; i--) {
         const pk = pickups[i];
         pk.x -= pk.speed;
@@ -602,7 +574,7 @@
         }
       }
 
-      // زيادة بسيطة في السكور مع الوقت
+      // زيادة بسيطة مع الوقت
       score += dt * 0.004;
       score = Math.floor(score);
       scoreLabel.textContent = "Score: " + score;
@@ -620,8 +592,7 @@
       drawPlayer();
     }
 
-    // ============ حلقة اللعبة ============
-
+    // حلقة اللعبة
     function loop(now) {
       if (gameState === STATE_PLAYING) {
         const dt = now - lastFrameTime;
@@ -637,8 +608,7 @@
       requestAnimationFrame(loop);
     }
 
-    // ============ الشاشات ============
-
+    // الشاشات
     function showScreen(screen) {
       startScreen.classList.remove("visible");
       gameOverScreen.classList.remove("visible");
@@ -672,14 +642,12 @@
       showScreen(gameOverScreen);
     }
 
-    // ============ ربط الأزرار ============
-
+    // أزرار
     startBtn.addEventListener("click", startPlaying);
     retryBtn.addEventListener("click", startPlaying);
     homeBtn.addEventListener("click", goToMenu);
 
-    // ============ بدء اللعبة ============
-
+    // بدء
     startBestScoreLabel.textContent = bestScore;
     requestAnimationFrame(loop);
   </script>
